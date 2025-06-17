@@ -233,6 +233,7 @@ jobs:
     - name: Run Trivy vulnerability scanner
       uses: aquasecurity/trivy-action@master
       with:
+        scan-type: 'image'
         image-ref: ${{ needs.docker-build-and-push.outputs.image-tag }}
         format: 'sarif'
         output: 'trivy-results.sarif'
