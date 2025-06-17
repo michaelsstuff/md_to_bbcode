@@ -102,6 +102,8 @@ jobs:
     outputs:
       new-release-published: ${{ steps.semantic.outputs.new-release-published }}
       new-release-version: ${{ steps.semantic.outputs.new-release-version }}
+      version-changed: ${{ steps.version-check.outputs.version-changed }}
+      detected-version: ${{ steps.version-check.outputs.new-version }}
     
     steps:
     - name: Checkout code
@@ -129,25 +131,39 @@ jobs:
       id: semantic
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: npx semantic-release
+    
+    - name: Debug release outputs
       run: |
-        echo "Running semantic-release..."
-        npx semantic-release --dry-run=false || {
-          echo "semantic-release failed, but continuing..."
-          echo "new-release-published=false" >> $GITHUB_OUTPUT
-          exit 0
-        }
+        echo "New release published: ${{ steps.semantic.outputs.new-release-published }}"
+        echo "New release version: ${{ steps.semantic.outputs.new-release-version }}"
+        echo "Current branch: ${{ github.ref_name }}"
+        echo "GitHub event: ${{ github.event_name }}"
+    
+    - name: Check for version changes
+      id: version-check
+      run: |
+        if [ -f version.py ]; then
+          NEW_VERSION=$(grep -o '"[^"]*"' version.py | tr -d '"')
+          echo "version-changed=true" >> $GITHUB_OUTPUT
+          echo "new-version=$NEW_VERSION" >> $GITHUB_OUTPUT
+          echo "Found version: $NEW_VERSION"
+        else
+          echo "version-changed=false" >> $GITHUB_OUTPUT
+          echo "No version.py found"
+        fi
 
   docker-build-and-push:
     name: Build and Push Docker Image
     runs-on: ubuntu-latest
     needs: release
-    if: needs.release.outputs.new-release-published == 'true'
+    if: needs.release.outputs.new-release-published == 'true' || needs.release.outputs.version-changed == 'true'
     
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
       with:
-        ref: main
+        ref: ${{ github.ref_name }}
         fetch-depth: 0
     
     - name: Set up Docker Buildx
@@ -193,7 +209,7 @@ jobs:
     name: Security Scan
     runs-on: ubuntu-latest
     needs: [release, docker-build-and-push]
-    if: needs.release.outputs.new-release-published == 'true'
+    if: needs.release.outputs.new-release-published == 'true' || needs.release.outputs.version-changed == 'true'
     
     steps:
     - name: Checkout code
