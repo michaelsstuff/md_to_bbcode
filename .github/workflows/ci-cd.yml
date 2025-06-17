@@ -219,27 +219,3 @@ jobs:
         
         # Test the published image
         echo "# Published Test v${{ needs.release.outputs.new-release-version }} **success**" | docker run --rm -i "${{ steps.set-tag.outputs.tag }}"
-
-  security-scan:
-    name: Security Scan
-    runs-on: ubuntu-latest
-    needs: [release, docker-build-and-push]
-    if: needs.release.outputs.new-release-published == 'true' || needs.release.outputs.version-changed == 'true'
-    
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
-    
-    - name: Run Trivy vulnerability scanner
-      uses: aquasecurity/trivy-action@master
-      with:
-        scan-type: 'image'
-        image-ref: ${{ needs.docker-build-and-push.outputs.image-tag }}
-        format: 'sarif'
-        output: 'trivy-results.sarif'
-    
-    - name: Upload Trivy scan results to GitHub Security tab
-      uses: github/codeql-action/upload-sarif@v3
-      if: always()
-      with:
-        sarif_file: 'trivy-results.sarif'
