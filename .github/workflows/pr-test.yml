@@ -1,0 +1,54 @@
+name: Pull Request Tests
+
+on:
+  pull_request:
+    branches: [ main, develop ]
+    types: [opened, synchronize, reopened]
+
+jobs:
+  test:
+    name: Test on Python ${{ matrix.python-version }}
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: [3.8, 3.11]  # Test on minimum and latest supported versions
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ matrix.python-version }}
+    
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+    
+    - name: Run tests
+      run: |
+        python test_converter.py
+    
+    - name: Test CLI
+      run: |
+        echo "# PR Test **bold** and *italic*" | python md_to_bbcode.py
+        python md_to_bbcode.py -f sample.md
+
+  docker-test:
+    name: Docker Build Test
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    - name: Build Docker image
+      run: |
+        docker build -t md-to-bbcode:pr-test .
+    
+    - name: Test Docker image
+      run: |
+        echo "# Docker PR Test" | docker run --rm -i md-to-bbcode:pr-test
+        docker run --rm -v $(pwd):/data md-to-bbcode:pr-test -f /data/sample.md
