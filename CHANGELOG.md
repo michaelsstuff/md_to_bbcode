@@ -1,3 +1,19 @@
+## [1.0.0-alpha.5](https://github.com/michaelsstuff/md_to_bbcode/compare/v1.0.0-alpha.4...v1.0.0-alpha.5) (2025-06-17)
+
+
+### ⚠ BREAKING CHANGES
+
+* Minimum Python version is now 3.10
+
+### Features
+
+* update supported Python versions to 3.10-3.13 ([3a4c16e](https://github.com/michaelsstuff/md_to_bbcode/commit/3a4c16ee1d003ff0c44951291811242eb5d07473))
+
+
+### Bug Fixes
+
+* replace deprecated unittest.makeSuite with TestLoader for Python 3.13 compatibility ([87e9ebc](https://github.com/michaelsstuff/md_to_bbcode/commit/87e9ebc3218567dbc3bb3039beafb8486e298154))
+
 ## [1.0.0-alpha.4](https://github.com/michaelsstuff/md_to_bbcode/compare/v1.0.0-alpha.3...v1.0.0-alpha.4) (2025-06-17)
 
 
