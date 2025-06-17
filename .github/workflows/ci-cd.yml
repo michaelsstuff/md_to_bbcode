@@ -158,6 +158,8 @@ jobs:
     runs-on: ubuntu-latest
     needs: release
     if: needs.release.outputs.new-release-published == 'true' || needs.release.outputs.version-changed == 'true'
+    outputs:
+      image-tag: ${{ steps.set-tag.outputs.tag }}
     
     steps:
     - name: Checkout code
@@ -182,9 +184,20 @@ jobs:
         images: ${{ secrets.DOCKER_USERNAME }}/${{ env.DOCKER_IMAGE }}
         tags: |
           type=semver,pattern={{version}},value=v${{ needs.release.outputs.new-release-version }}
-          type=semver,pattern={{major}}.{{minor}},value=v${{ needs.release.outputs.new-release-version }}
-          type=semver,pattern={{major}},value=v${{ needs.release.outputs.new-release-version }}
-          type=raw,value=latest
+          type=semver,pattern={{major}}.{{minor}},value=v${{ needs.release.outputs.new-release-version }},enable=${{ !contains(needs.release.outputs.new-release-version, '-') }}
+          type=semver,pattern={{major}},value=v${{ needs.release.outputs.new-release-version }},enable=${{ !contains(needs.release.outputs.new-release-version, '-') }}
+          type=raw,value=latest,enable=${{ !contains(needs.release.outputs.new-release-version, '-') }}
+          type=raw,value=prerelease,enable=${{ contains(needs.release.outputs.new-release-version, '-') }}
+    
+    - name: Set primary tag
+      id: set-tag
+      run: |
+        echo "All tags from metadata:"
+        echo "${{ steps.meta.outputs.tags }}"
+        echo "---"
+        PRIMARY_TAG=$(echo "${{ steps.meta.outputs.tags }}" | head -n1)
+        echo "tag=$PRIMARY_TAG" >> $GITHUB_OUTPUT
+        echo "Primary tag: $PRIMARY_TAG"
     
     - name: Build and push Docker image
       uses: docker/build-push-action@v5
@@ -202,8 +215,10 @@ jobs:
         # Wait a moment for the image to be available
         sleep 10
         
+        echo "Testing image: ${{ steps.set-tag.outputs.tag }}"
+        
         # Test the published image
-        echo "# Published Test v${{ needs.release.outputs.new-release-version }} **success**" | docker run --rm -i ${{ secrets.DOCKER_USERNAME }}/${{ env.DOCKER_IMAGE }}:${{ needs.release.outputs.new-release-version }}
+        echo "# Published Test v${{ needs.release.outputs.new-release-version }} **success**" | docker run --rm -i "${{ steps.set-tag.outputs.tag }}"
 
   security-scan:
     name: Security Scan
@@ -218,7 +233,7 @@ jobs:
     - name: Run Trivy vulnerability scanner
       uses: aquasecurity/trivy-action@master
       with:
-        image-ref: ${{ secrets.DOCKER_USERNAME }}/${{ env.DOCKER_IMAGE }}:${{ needs.release.outputs.new-release-version }}
+        image-ref: ${{ needs.docker-build-and-push.outputs.image-tag }}
         format: 'sarif'
         output: 'trivy-results.sarif'
     
