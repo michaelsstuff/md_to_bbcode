@@ -1,3 +1,10 @@
+## [1.0.0-alpha.6](https://github.com/michaelsstuff/md_to_bbcode/compare/v1.0.0-alpha.5...v1.0.0-alpha.6) (2025-06-17)
+
+
+### Bug Fixes
+
+* **ci:** remove security scan ([ce8f2c0](https://github.com/michaelsstuff/md_to_bbcode/commit/ce8f2c0936bc03bd02bc26bf1853a85f8f195d02))
+
 ## [1.0.0-alpha.5](https://github.com/michaelsstuff/md_to_bbcode/compare/v1.0.0-alpha.4...v1.0.0-alpha.5) (2025-06-17)
 
 
