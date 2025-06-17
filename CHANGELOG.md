@@ -1,3 +1,10 @@
+## [1.0.0-alpha.2](https://github.com/michaelsstuff/md_to_bbcode/compare/v1.0.0-alpha.1...v1.0.0-alpha.2) (2025-06-17)
+
+
+### Bug Fixes
+
+* **ci:** add fallback detection for prerelease version changes ([a6cce07](https://github.com/michaelsstuff/md_to_bbcode/commit/a6cce0769e1ee07141e6d91fa61d3189c6ea9459))
+
 ## 1.0.0-alpha.1 (2025-06-17)
 
 
