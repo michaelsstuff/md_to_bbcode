@@ -157,13 +157,13 @@ with multiple lines[/quote]
 ## Installation & Dependencies
 
 ### Python Requirements
-- **Python 3.8+**: Core runtime
+- **Python 3.10+**: Core runtime
 - **click**: Command-line interface framework
 - **markdown**: Markdown parsing (used for validation)
 
 ### Docker Image
 The Docker image is built on Alpine Linux for minimal size and includes:
-- Python 3.11 runtime
+- Python 3.13 runtime
 - All required dependencies
 - Non-root user execution
 - Optimized for production use
