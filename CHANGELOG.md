@@ -1,3 +1,10 @@
+## [1.0.0-alpha.4](https://github.com/michaelsstuff/md_to_bbcode/compare/v1.0.0-alpha.3...v1.0.0-alpha.4) (2025-06-17)
+
+
+### Bug Fixes
+
+* correct Trivy security scan configuration ([264d105](https://github.com/michaelsstuff/md_to_bbcode/commit/264d1051efbb12e3257cdf78e55e1efb83470ebc))
+
 ## [1.0.0-alpha.3](https://github.com/michaelsstuff/md_to_bbcode/compare/v1.0.0-alpha.2...v1.0.0-alpha.3) (2025-06-17)
 
 
