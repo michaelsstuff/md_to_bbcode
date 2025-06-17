@@ -303,9 +303,12 @@ def run_tests():
     # Create a test suite
     suite = unittest.TestSuite()
     
-    # Add all test cases
-    suite.addTest(unittest.makeSuite(TestMarkdownToBBCodeConverter))
-    suite.addTest(unittest.makeSuite(TestCLIIntegration))
+    # Add all test cases using the modern approach
+    # Note: unittest.makeSuite() was deprecated and removed in Python 3.13
+    # Using TestLoader().loadTestsFromTestCase() instead for compatibility
+    loader = unittest.TestLoader()
+    suite.addTest(loader.loadTestsFromTestCase(TestMarkdownToBBCodeConverter))
+    suite.addTest(loader.loadTestsFromTestCase(TestCLIIntegration))
     
     # Run the tests
     runner = unittest.TextTestRunner(verbosity=2)
