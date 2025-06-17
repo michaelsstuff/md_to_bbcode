@@ -1,3 +1,10 @@
+## [1.0.0-alpha.3](https://github.com/michaelsstuff/md_to_bbcode/compare/v1.0.0-alpha.2...v1.0.0-alpha.3) (2025-06-17)
+
+
+### Bug Fixes
+
+* improve Docker image tagging for prereleases ([d347d41](https://github.com/michaelsstuff/md_to_bbcode/commit/d347d41e3d0870acffe65474ac2f8d983f96b358))
+
 ## [1.0.0-alpha.2](https://github.com/michaelsstuff/md_to_bbcode/compare/v1.0.0-alpha.1...v1.0.0-alpha.2) (2025-06-17)
 
 
