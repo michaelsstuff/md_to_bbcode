@@ -73,7 +73,9 @@
             "path": "CHANGELOG.md",
             "label": "Changelog"
           }
-        ]
+        ],
+        "failComment": false,
+        "failTitle": false
       }
     ]
   ]
