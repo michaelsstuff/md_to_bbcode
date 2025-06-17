@@ -274,6 +274,112 @@ Brief description of changes
 - Assume good intentions
 - Keep discussions on-topic
 
+## Development Reference
+
+### Project Structure
+```
+md_to_bbcode/
+├── .github/
+│   └── workflows/
+│       ├── ci-cd.yml          # Main CI/CD pipeline with semantic-release
+│       └── pr-test.yml        # Pull request testing
+├── Dockerfile                 # Docker container configuration
+├── .dockerignore              # Docker build exclusions
+├── .gitignore                 # Git ignore patterns
+├── .releaserc.json            # semantic-release configuration
+├── package.json               # Node.js dependencies for semantic-release
+├── package-lock.json          # Locked Node.js dependencies
+├── requirements.txt           # Python dependencies
+├── version.py                 # Version file (managed by semantic-release)
+├── md_to_bbcode.py           # Main converter script
+├── test_converter.py         # Comprehensive test suite
+├── sample.md                 # Sample Markdown file
+├── build.sh                  # Build and run script
+├── run_tests.sh              # Test runner script
+├── CHANGELOG.md              # Auto-generated changelog
+├── LICENSE                   # GPL v3 license
+├── CONTRIBUTING.md           # This file
+└── README.md                 # User documentation
+```
+
+### Advanced Testing
+
+#### Local Test Suite
+```bash
+# Set up environment
+python3 -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+
+# Run comprehensive tests
+python test_converter.py
+
+# Run with verbose output
+python -m pytest test_converter.py -v
+```
+
+#### Docker Testing
+```bash
+# Build and test container
+docker build -t md-to-bbcode-dev .
+./run_tests.sh
+
+# Complete build, test, and demo
+./build.sh
+```
+
+#### Test Coverage
+The test suite covers:
+- All header levels (H1-H6)
+- Bold and italic formatting (both syntaxes)
+- Code blocks (inline and fenced)
+- Links and images
+- Ordered and unordered lists
+- Blockquotes (single and multi-line)
+- Horizontal rules
+- Edge cases and error conditions
+- Nested formatting combinations
+
+### CI/CD Pipeline Details
+
+#### Automated Versioning & Releases
+- **Conventional Commits**: Commit messages determine version bumps
+- **Semantic Versioning**: Automatic major.minor.patch versioning
+- **Automated Changelog**: Generated from commit messages
+- **Git Tags**: Automatically created for each release
+- **GitHub Releases**: Created with release notes and assets
+
+#### Testing Pipeline
+- **Multi-Python Support**: Tests run on Python 3.8, 3.9, 3.10, 3.11, and 3.12
+- **Pull Request Testing**: Every PR is automatically tested before merge
+- **Docker Testing**: Container functionality is verified in CI
+
+#### Release & Deployment
+- **Conditional Deployment**: Docker images are **only** published when semantic-release creates a new version
+- **Multi-Architecture**: Images built for both AMD64 and ARM64 architectures
+- **Security Scanning**: Images are scanned for vulnerabilities using Trivy
+- **Versioned Images**: Each release creates tagged Docker images (e.g., `v1.2.3`, `1.2`, `1`, `latest`)
+
+#### Release Workflow
+1. **Develop** → Make changes with conventional commits
+2. **Push to main** → Triggers automated testing
+3. **Semantic Release** → Analyzes commits, creates version, tag, and GitHub release
+4. **Docker Build** → Only triggers if a new release was created
+5. **Security Scan** → Scans the published image
+
+### GitHub Repository Setup
+
+To enable automated Docker image publishing, configure these repository secrets:
+- `DOCKER_USERNAME`: Your Docker Hub username  
+- `DOCKER_PASSWORD`: Your Docker Hub password or access token
+
+The CI/CD pipeline will automatically:
+- Test all changes on multiple Python versions
+- Build and test Docker images
+- Run semantic-release for version management
+- Publish Docker images only on successful releases
+- Scan published images for security vulnerabilities
+
 ## Recognition
 
 Contributors are recognized in:
